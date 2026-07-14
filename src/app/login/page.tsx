@@ -17,12 +17,15 @@ export default function LoginPage() {
     if (!supabase) return;
     setLoading(true);
     setError("");
-    const { error } = await supabase.auth.signInWithOtp({
+    const result = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
     });
     setLoading(false);
-    if (error) setError(error.message);
+    if (result.error) {
+      console.error("Supabase auth error:", result.error);
+      setError(result.error.message || JSON.stringify(result.error));
+    }
     else setSent(true);
   }
 
